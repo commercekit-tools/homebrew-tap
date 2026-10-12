@@ -141,10 +141,6 @@ jobs:
             echo "commercekit still resolves after uninstall" >&2
             exit 1
           fi
-          if brew list --formula commercekit; then
-            echo "commercekit keg remains after uninstall" >&2
-            exit 1
-          fi
           test ! -d "$(brew --cellar)/commercekit"
 
       - name: Reinstall and retest
@@ -159,10 +155,6 @@ jobs:
           brew uninstall commercekit
           if command -v commercekit; then
             echo "commercekit still resolves after final uninstall" >&2
-            exit 1
-          fi
-          if brew list --formula commercekit; then
-            echo "commercekit keg remains after final uninstall" >&2
             exit 1
           fi
           test ! -d "$(brew --cellar)/commercekit"
