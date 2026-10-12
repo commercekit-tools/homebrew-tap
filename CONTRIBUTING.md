@@ -57,10 +57,19 @@ brew uninstall commercekit
 The formula must remain dependency-free. Do not add Node.js, Bun, pnpm, a
 compiler, or another build dependency for the standalone executable.
 
+Homebrew's built-in SHA-256 enforcement protects installation, while the
+independent release-contract verifier checks the same values against the
+public manifest and checksum file. CI does not mutate the real formula to run
+a separate negative-checksum installation.
+
 Native execution can verify only the current host architecture. Report which
 targets were run natively and which received release-contract verification.
 Do not claim a cross-version upgrade test until a second public CLI version
 exists.
+
+Formula updates remain manual for the initial preview. Do not add a `livecheck`
+block or an automatic formula-bump workflow until the prerelease selection and
+update policy are deliberately designed and tested.
 
 ## Pull requests
 
