@@ -39,6 +39,11 @@ jobs:
           printf 'runner.arch=%s\n' "$RUNNER_ARCH"
           uname -a
           uname -m
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            cat /etc/os-release
+          else
+            sw_vers
+          fi
           brew --version
 
       - name: Install Homebrew style dependencies
@@ -87,6 +92,11 @@ jobs:
           printf 'runner.arch=%s\n' "$RUNNER_ARCH"
           uname -a
           uname -m
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            cat /etc/os-release
+          else
+            sw_vers
+          fi
           brew --version
           test "$(git -C '${{ steps.homebrew.outputs.repository-path }}' rev-parse HEAD)" = "$GITHUB_SHA"
 
