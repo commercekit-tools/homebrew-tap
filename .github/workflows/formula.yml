@@ -1,0 +1,170 @@
+name: Homebrew Formula
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: homebrew-formula-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  HOMEBREW_NO_ANALYTICS: 1
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_ENV_HINTS: 1
+
+jobs:
+  release-contract:
+    name: Release contract and formula audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Set up Homebrew and check out the tap
+        id: homebrew
+        uses: Homebrew/actions/setup-homebrew@e99025eb970cfa124b8284a35463d87426917478 # 2026.09.28.1
+        with:
+          core: false
+          cask: false
+          stable: true
+
+      - name: Record runner and Homebrew details
+        run: |
+          printf 'runner.os=%s\n' "$RUNNER_OS"
+          printf 'runner.arch=%s\n' "$RUNNER_ARCH"
+          uname -a
+          uname -m
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            cat /etc/os-release
+          else
+            sw_vers
+          fi
+          brew --version
+
+      - name: Install Homebrew style dependencies
+        run: brew install-bundler-gems --groups=style
+
+      - name: Test the release-contract verifier offline
+        working-directory: ${{ steps.homebrew.outputs.repository-path }}
+        run: ruby test/verify_release_contract_test.rb
+
+      - name: Verify the published release contract
+        working-directory: ${{ steps.homebrew.outputs.repository-path }}
+        run: ruby scripts/verify-release-contract.rb
+
+      - name: Check formula style
+        run: brew style commercekit-tools/tap/commercekit
+
+      - name: Audit the external-tap formula
+        run: >-
+          brew audit --strict --online --os=all --arch=all
+          commercekit-tools/tap/commercekit
+
+  formula-lifecycle:
+    name: Formula lifecycle (${{ matrix.name }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS ARM64
+            runner: macos-15
+          - name: Linux x64
+            runner: ubuntu-24.04
+    steps:
+      - name: Set up Homebrew and check out the tap
+        id: homebrew
+        uses: Homebrew/actions/setup-homebrew@e99025eb970cfa124b8284a35463d87426917478 # 2026.09.28.1
+        with:
+          core: false
+          cask: false
+          stable: true
+
+      - name: Record runner and Homebrew details
+        run: |
+          printf 'runner.os=%s\n' "$RUNNER_OS"
+          printf 'runner.arch=%s\n' "$RUNNER_ARCH"
+          uname -a
+          uname -m
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            cat /etc/os-release
+          else
+            sw_vers
+          fi
+          brew --version
+          test "$(git -C '${{ steps.homebrew.outputs.repository-path }}' rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Verify formula metadata and dependencies
+        run: |
+          formula=commercekit-tools/tap/commercekit
+          test -z "$(brew deps --direct "$formula")"
+          FORMULA_JSON="$(brew info --json=v2 "$formula")" ruby -rjson -e '
+            formula = JSON.parse(ENV.fetch("FORMULA_JSON")).fetch("formulae").fetch(0)
+            abort "wrong version" unless formula.dig("versions", "stable") == "0.1.0-preview.1"
+            dependency_keys = %w[build_dependencies dependencies test_dependencies recommended_dependencies optional_dependencies]
+            abort "formula declares dependencies" unless dependency_keys.all? { |key| formula.fetch(key).empty? }
+          '
+
+      - name: Install the standalone CLI
+        run: brew install --build-from-source commercekit-tools/tap/commercekit
+
+      - name: Verify installed files and exact version
+        run: |
+          expected="$(brew --prefix)/bin/commercekit"
+          test "$(command -v commercekit)" = "$expected"
+          test "$(commercekit --version)" = "0.1.0-preview.1"
+          formula_prefix="$(brew --prefix commercekit)"
+          test -f "$formula_prefix/share/commercekit/LICENSE"
+          test -f "$formula_prefix/share/commercekit/THIRD_PARTY_NOTICES"
+          test -f "$formula_prefix/share/commercekit/README.txt"
+
+      - name: Verify standalone and offline execution
+        run: |
+          isolated_home="$RUNNER_TEMP/commercekit-home"
+          mkdir -p "$isolated_home"
+          binary="$(brew --prefix commercekit)/bin/commercekit"
+          test "$(env -i HOME="$isolated_home" PATH=/usr/bin:/bin "$binary" --version)" = "0.1.0-preview.1"
+          output="$(env -i HOME="$isolated_home" PATH=/usr/bin:/bin "$binary" cron explain '0 0 2 * * ?')"
+          printf '%s\n' "$output"
+          grep -F "Schedule: Every day at 2:00 AM." <<<"$output"
+
+      - name: Test formula and linkage
+        run: |
+          brew test commercekit-tools/tap/commercekit
+          brew linkage --test commercekit-tools/tap/commercekit
+
+      - name: Verify current-version upgrade behavior
+        run: |
+          test -z "$(brew outdated commercekit-tools/tap/commercekit)"
+          brew upgrade commercekit
+
+      - name: Uninstall and verify cleanup
+        run: |
+          brew uninstall commercekit
+          if command -v commercekit; then
+            echo "commercekit still resolves after uninstall" >&2
+            exit 1
+          fi
+          test ! -d "$(brew --cellar)/commercekit"
+
+      - name: Reinstall and retest
+        run: |
+          brew install --build-from-source commercekit-tools/tap/commercekit
+          test "$(commercekit --version)" = "0.1.0-preview.1"
+          brew test commercekit-tools/tap/commercekit
+          commercekit cron explain "0 0 2 * * ?"
+
+      - name: Final uninstall
+        run: |
+          brew uninstall commercekit
+          if command -v commercekit; then
+            echo "commercekit still resolves after final uninstall" >&2
+            exit 1
+          fi
+          test ! -d "$(brew --cellar)/commercekit"
