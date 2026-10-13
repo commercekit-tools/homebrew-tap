@@ -106,7 +106,7 @@ jobs:
           test -z "$(brew deps --direct "$formula")"
           FORMULA_JSON="$(brew info --json=v2 "$formula")" ruby -rjson -e '
             formula = JSON.parse(ENV.fetch("FORMULA_JSON")).fetch("formulae").fetch(0)
-            abort "wrong version" unless formula.dig("versions", "stable") == "0.1.0-preview.1"
+            abort "wrong version" unless formula.dig("versions", "stable") == "0.1.0-preview.2"
             dependency_keys = %w[build_dependencies dependencies test_dependencies recommended_dependencies optional_dependencies]
             abort "formula declares dependencies" unless dependency_keys.all? { |key| formula.fetch(key).empty? }
           '
@@ -118,7 +118,7 @@ jobs:
         run: |
           expected="$(brew --prefix)/bin/commercekit"
           test "$(command -v commercekit)" = "$expected"
-          test "$(commercekit --version)" = "0.1.0-preview.1"
+          test "$(commercekit --version)" = "0.1.0-preview.2"
           formula_prefix="$(brew --prefix commercekit)"
           test -f "$formula_prefix/share/commercekit/LICENSE"
           test -f "$formula_prefix/share/commercekit/THIRD_PARTY_NOTICES"
@@ -129,7 +129,7 @@ jobs:
           isolated_home="$RUNNER_TEMP/commercekit-home"
           mkdir -p "$isolated_home"
           binary="$(brew --prefix commercekit)/bin/commercekit"
-          test "$(env -i HOME="$isolated_home" PATH=/usr/bin:/bin "$binary" --version)" = "0.1.0-preview.1"
+          test "$(env -i HOME="$isolated_home" PATH=/usr/bin:/bin "$binary" --version)" = "0.1.0-preview.2"
           output="$(env -i HOME="$isolated_home" PATH=/usr/bin:/bin "$binary" cron explain '0 0 2 * * ?')"
           printf '%s\n' "$output"
           grep -F "Schedule: Every day at 2:00 AM." <<<"$output"
@@ -139,7 +139,7 @@ jobs:
           brew test commercekit-tools/tap/commercekit
           brew linkage --test commercekit-tools/tap/commercekit
 
-      - name: Verify current-version upgrade behavior
+      - name: Verify the installed formula is current
         run: |
           test -z "$(brew outdated commercekit-tools/tap/commercekit)"
           brew upgrade commercekit
@@ -156,7 +156,7 @@ jobs:
       - name: Reinstall and retest
         run: |
           brew install --build-from-source commercekit-tools/tap/commercekit
-          test "$(commercekit --version)" = "0.1.0-preview.1"
+          test "$(commercekit --version)" = "0.1.0-preview.2"
           brew test commercekit-tools/tap/commercekit
           commercekit cron explain "0 0 2 * * ?"
 

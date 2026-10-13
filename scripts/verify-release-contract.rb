@@ -24,20 +24,20 @@ module CommerceKitReleaseContract
 
   DEFAULT_CONTRACT = Contract.new(
     repository: "commercekit-tools/cli",
-    version: "0.1.0-preview.1",
-    tag: "cli-v0.1.0-preview.1",
-    build_id: "c3277e64a322b5057058fc74f76bb83ea7ff8d06",
+    version: "0.1.0-preview.2",
+    tag: "cli-v0.1.0-preview.2",
+    build_id: "bceb04d3246ba74ce96bae27f5407862a11e04eb",
     archive_sha256: {
-      "darwin-arm64" => "097704b2750b906daf87f6309ca96a825d4058fd3fce85ad7523561db69d82bf",
-      "darwin-x64" => "d8307276978b745bf3d86eb1b6d164f23b304cc2c82a75e301f7e4fead2927de",
-      "linux-arm64" => "914d5acad10351e21f426b93b2c95f97aa8a9afc1284a550343aead09ff86fb9",
-      "linux-x64" => "d01dd1bc45b39125ddc642b84163ceb24239a6a3ff9c80f69efe2e4939187d0b",
-      "windows-arm64" => "e13df10cc9b95c80a41b4d42dd180f4382bd91a7c0be8659ce77bb313b9d8bdf",
-      "windows-x64" => "a2d050a4a688c7d5e7b5245193148da7faa8a979c2003c09886284030da27d4e",
+      "darwin-arm64" => "264c476c3a6ae0174ec2659f1e1c90b30b0942b78ae2a1e2e970465ec0b1c6eb",
+      "darwin-x64" => "afa2a6c9dc1cb7c43570929ee0faf679065ee3cf259fe606ff502fe41e037407",
+      "linux-arm64" => "e96da85d977c987a7ae03d5260cb7f1171855bee142fe74e150df28870d79999",
+      "linux-x64" => "623c0c9cc803e2c11ea9a4aa12a0dc37cf7ba0d73403b48f395d1cd0f6bf245a",
+      "windows-arm64" => "c3a0d839349ba47d6b094c4e9cc0e79dd546dcaf3bdf477c8ed9338d0c80daa3",
+      "windows-x64" => "0555b7c3d967233173434b7d51dc5a1cc7f791c23419f8eccea8e086406215b9",
     }.freeze,
     release_asset_sha256: {
-      "release-manifest.json" => "c4c776b0456a34859fb782d7b9c6bc7545cab75235d646da044189499ccf52b8",
-      "SHA256SUMS" => "2231343f1dc44538a99a29324c6247325ba497c4bbb9057fb8f4059233347238",
+      "release-manifest.json" => "0c59f5380bf1b715ea3093a8a7ceb2d525d004f6dabcd887a2efc7d589ad96b3",
+      "SHA256SUMS" => "20ccb0f94c8398c9a0984eb96f22d982282cb86eca8090c4fd176f412df8891c",
     }.freeze,
   ).freeze
 

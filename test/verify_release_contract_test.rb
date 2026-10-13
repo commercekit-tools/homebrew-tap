@@ -134,7 +134,7 @@ class VerifyReleaseContractTest < Minitest::Test
 
     def initialize
       @repository = "commercekit-tools/cli"
-      @version = "0.1.0-preview.1"
+      @version = "0.1.0-preview.2"
       @tag = "cli-v#{@version}"
       @build_id = "a" * 40
       @base_url = "https://github.com/#{@repository}/releases/download/#{@tag}"

@@ -1,30 +1,30 @@
 class Commercekit < Formula
   desc "SAP Commerce developer tools for terminals and CI"
   homepage "https://commercekit.tools"
-  version "0.1.0-preview.1"
+  version "0.1.0-preview.2"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/commercekit-tools/cli/releases/download/cli-v#{version}/commercekit-v#{version}-darwin-arm64.tar.gz"
-      sha256 "097704b2750b906daf87f6309ca96a825d4058fd3fce85ad7523561db69d82bf"
+      sha256 "264c476c3a6ae0174ec2659f1e1c90b30b0942b78ae2a1e2e970465ec0b1c6eb"
     end
 
     on_intel do
       url "https://github.com/commercekit-tools/cli/releases/download/cli-v#{version}/commercekit-v#{version}-darwin-x64.tar.gz"
-      sha256 "d8307276978b745bf3d86eb1b6d164f23b304cc2c82a75e301f7e4fead2927de"
+      sha256 "afa2a6c9dc1cb7c43570929ee0faf679065ee3cf259fe606ff502fe41e037407"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/commercekit-tools/cli/releases/download/cli-v#{version}/commercekit-v#{version}-linux-arm64.tar.gz"
-      sha256 "914d5acad10351e21f426b93b2c95f97aa8a9afc1284a550343aead09ff86fb9"
+      sha256 "e96da85d977c987a7ae03d5260cb7f1171855bee142fe74e150df28870d79999"
     end
 
     on_intel do
       url "https://github.com/commercekit-tools/cli/releases/download/cli-v#{version}/commercekit-v#{version}-linux-x64.tar.gz"
-      sha256 "d01dd1bc45b39125ddc642b84163ceb24239a6a3ff9c80f69efe2e4939187d0b"
+      sha256 "623c0c9cc803e2c11ea9a4aa12a0dc37cf7ba0d73403b48f395d1cd0f6bf245a"
     end
   end
 
