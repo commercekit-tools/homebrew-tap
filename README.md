@@ -13,7 +13,7 @@ needed to distribute the published CLI archives.
 
 ## Status
 
-The current formula installs CommerceKit CLI `0.1.0-preview.1`. This is a
+The current formula installs CommerceKit CLI `0.1.0-preview.2`. This is a
 developer preview and is not a stable release.
 
 ## Installation
@@ -35,7 +35,7 @@ commercekit --help
 commercekit check
 ```
 
-The version command should report `0.1.0-preview.1`. Run `commercekit check`
+The version command should report `0.1.0-preview.2`. Run `commercekit check`
 inside a project that you want CommerceKit to inspect.
 
 ## Usage
@@ -71,9 +71,8 @@ brew update
 brew upgrade commercekit
 ```
 
-Only one CommerceKit CLI version is currently published in this tap. A true
-version-to-version upgrade cannot be demonstrated until another version is
-available.
+The `0.1.0-preview.1` to `0.1.0-preview.2` update was verified with this normal
+Homebrew upgrade path.
 
 ## Uninstall
 
@@ -110,11 +109,11 @@ to its published SHA-256 value. Homebrew performs this checksum verification
 during a normal installation; users do not need to verify the archive
 manually.
 
-The `0.1.0-preview.1` release contract is available through:
+The `0.1.0-preview.2` release contract is available through:
 
-- [release page](https://github.com/commercekit-tools/cli/releases/tag/cli-v0.1.0-preview.1)
-- [release-manifest.json](https://github.com/commercekit-tools/cli/releases/download/cli-v0.1.0-preview.1/release-manifest.json)
-- [SHA256SUMS](https://github.com/commercekit-tools/cli/releases/download/cli-v0.1.0-preview.1/SHA256SUMS)
+- [release page](https://github.com/commercekit-tools/cli/releases/tag/cli-v0.1.0-preview.2)
+- [release-manifest.json](https://github.com/commercekit-tools/cli/releases/download/cli-v0.1.0-preview.2/release-manifest.json)
+- [SHA256SUMS](https://github.com/commercekit-tools/cli/releases/download/cli-v0.1.0-preview.2/SHA256SUMS)
 
 The repository verifier checks the public release state, manifest, checksums,
 all four Homebrew target mappings, archive contents, immutable URLs, and the
